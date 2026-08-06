@@ -15,7 +15,7 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto p-8">
+    <section className="max-w-full mx-auto p-8">
       <h2 className="text-3xl font-bold mb-6">
         Testimonials
       </h2>
