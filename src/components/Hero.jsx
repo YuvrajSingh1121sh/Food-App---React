@@ -3,169 +3,130 @@ import {
   Bike,
   BadgePercent,
   ShieldCheck,
-  Zap
+  Zap,
 } from "lucide-react";
 
 import heroImage from "../assets/images/plate.jpg";
 
 export default function Hero() {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-8">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      {/* Hero Container */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10 items-center bg-orange-50 rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 shadow-sm">
 
-      <div className="grid lg:grid-cols-2 gap-10 items-center bg-orange-50 rounded-3xl p-10 shadow-sm">
+        {/* Left Content */}
+        <div className="text-center lg:text-left">
 
-        {/* LEFT */}
-
-        <div>
-
-          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full font-semibold">
-
-            <Zap size={16} />
-
-            FAST DELIVERY
-
+          {/* Small Badge */}
+          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm text-sm text-gray-700">
+            <Zap size={16} className="text-orange-500" />
+            <span>Fast & Fresh Delivery</span>
           </div>
 
-          <h1 className="text-6xl font-bold mt-8 leading-tight">
-
-            Delicious food,
-
-            <span className="block text-orange-500">
-              delivered to you
-            </span>
-
+          {/* Heading */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mt-5 sm:mt-8 leading-tight text-gray-900">
+            Delicious Food,
+            <br />
+            <span className="text-orange-500">Delivered Fast.</span>
           </h1>
 
-          <p className="text-gray-600 text-lg mt-6">
-            Order from your favorite restaurants
-            and get it delivered fast to your doorstep.
+          {/* Description */}
+          <p className="text-gray-600 text-base sm:text-lg mt-4 sm:mt-6 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            Order your favorite meals from the best restaurants around you
+            and get them delivered straight to your doorstep.
           </p>
 
-          {/* Search */}
+          {/* Search Box */}
+          <div className="flex flex-col sm:flex-row mt-6 sm:mt-8 bg-white rounded-xl shadow overflow-hidden w-full max-w-xl mx-auto lg:mx-0">
 
-          <div className="flex mt-8 shadow rounded-xl overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3 flex-1 min-w-0">
+              <MapPin
+                size={22}
+                className="text-orange-500 flex-shrink-0"
+              />
 
-            <div className="flex items-center px-4 bg-white">
-
-              <MapPin className="text-gray-400" />
-
+              <input
+                type="text"
+                placeholder="Enter your delivery location"
+                className="w-full min-w-0 outline-none text-gray-700 text-sm sm:text-base"
+              />
             </div>
 
-            <input
-              type="text"
-              placeholder="Enter your delivery address"
-              className="flex-1 p-4 outline-none"
-            />
-
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 font-semibold">
+            <button className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-6 sm:px-8 py-3 font-semibold transition">
               Find Food
             </button>
-
           </div>
 
           {/* Features */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-10">
 
-          <div className="grid grid-cols-3 gap-6 mt-10">
+            {/* Feature 1 */}
+            <div className="flex items-center justify-center lg:justify-start gap-3">
+              <div className="bg-white p-3 rounded-full shadow-sm">
+                <Bike className="text-orange-500" size={22} />
+              </div>
 
-            <div className="flex gap-3">
-
-              <Bike
-                className="text-orange-500 bg-orange-100 rounded-full p-2"
-                size={44}
-              />
-
-              <div>
-
-                <h3 className="font-semibold">
+              <div className="text-left">
+                <p className="font-semibold text-gray-800 text-sm">
                   Fast Delivery
-                </h3>
-
-                <p className="text-sm text-gray-500">
-                  On time
                 </p>
-
+                <p className="text-xs text-gray-500">
+                  At your doorstep
+                </p>
               </div>
-
             </div>
 
-            <div className="flex gap-3">
+            {/* Feature 2 */}
+            <div className="flex items-center justify-center lg:justify-start gap-3">
+              <div className="bg-white p-3 rounded-full shadow-sm">
+                <BadgePercent
+                  className="text-orange-500"
+                  size={22}
+                />
+              </div>
 
-              <BadgePercent
-                className="text-orange-500 bg-orange-100 rounded-full p-2"
-                size={44}
-              />
-
-              <div>
-
-                <h3 className="font-semibold">
+              <div className="text-left">
+                <p className="font-semibold text-gray-800 text-sm">
                   Best Offers
-                </h3>
-
-                <p className="text-sm text-gray-500">
-                  Great discounts
                 </p>
-
+                <p className="text-xs text-gray-500">
+                  Save more
+                </p>
               </div>
-
             </div>
 
-            <div className="flex gap-3">
-
-              <ShieldCheck
-                className="text-orange-500 bg-orange-100 rounded-full p-2"
-                size={44}
-              />
-
-              <div>
-
-                <h3 className="font-semibold">
-                  Secure Payment
-                </h3>
-
-                <p className="text-sm text-gray-500">
-                  100% Safe
-                </p>
-
+            {/* Feature 3 */}
+            <div className="flex items-center justify-center lg:justify-start gap-3">
+              <div className="bg-white p-3 rounded-full shadow-sm">
+                <ShieldCheck
+                  className="text-orange-500"
+                  size={22}
+                />
               </div>
 
+              <div className="text-left">
+                <p className="font-semibold text-gray-800 text-sm">
+                  Safe & Secure
+                </p>
+                <p className="text-xs text-gray-500">
+                  Trusted service
+                </p>
+              </div>
             </div>
 
           </div>
-
         </div>
 
-        {/* RIGHT */}
-
-        <div className="relative flex justify-center">
-
-          {/* Discount Badge */}
-
-          <div className="absolute top-0 left-6 bg-orange-500 text-white rounded-full w-28 h-28 flex flex-col justify-center items-center shadow-xl z-10">
-
-            <p className="text-sm">
-              UP TO
-            </p>
-
-            <h2 className="text-3xl font-bold">
-              50%
-            </h2>
-
-            <p>
-              OFF
-            </p>
-
-          </div>
-
+        {/* Right Image */}
+        <div className="flex justify-center items-center order-first lg:order-last">
           <img
             src={heroImage}
-            alt="Food"
-            className="w-full max-w-xl object-contain drop-shadow-2xl"
+            alt="Delicious food"
+            className="w-full max-w-xs sm:max-w-md lg:max-w-lg mx-auto object-contain"
           />
-
         </div>
 
       </div>
-
     </section>
   );
 }

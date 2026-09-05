@@ -1,19 +1,52 @@
 @import "tailwindcss";
+
+/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
+/* Global body styles */
 body {
+  margin: 0;
+  padding: 0;
   background: #ffffff;
   font-family: Inter, sans-serif;
   color: #111827;
+  overflow-x: hidden;
 }
 
+/* Remove default link styling */
 a {
   text-decoration: none;
 }
 
+/* Responsive images */
 img {
-  width: 100%;
+  max-width: 100%;
+  height: auto;
   display: block;
+}
+
+/* Make buttons and inputs use the same font */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Prevent buttons from showing unwanted outlines */
+button {
+  cursor: pointer;
+}
+
+/* Better mobile tap experience */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent long text from breaking the layout */
+* {
+  box-sizing: border-box;
 }
