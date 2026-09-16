@@ -1,455 +1,348 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
   Eye,
   EyeOff,
-  User,
-  Phone,
-  Bike,
-  Tag,
-  ShieldCheck,
   ArrowLeft,
+  LogIn,
+  Utensils,
 } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const [isLoginView, setIsLoginView] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    setError("");
+
+    /* -----------------------------
+       Basic validation
+    ----------------------------- */
+
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    /* -----------------------------
+       Get registered user
+    ----------------------------- */
+
+    const registeredUser = JSON.parse(
+      localStorage.getItem("foodiehub-user")
+    );
+
+    if (!registeredUser) {
+      setError(
+        "No account found. Please register first."
+      );
+      return;
+    }
+
+    /* -----------------------------
+       Check credentials
+    ----------------------------- */
+
+    if (
+      registeredUser.email !== email ||
+      registeredUser.password !== password
+    ) {
+      setError("Invalid email or password.");
+      return;
+    }
+
+    /* -----------------------------
+       Save login session
+    ----------------------------- */
+
+    localStorage.setItem(
+      "foodiehub-logged-in",
+      "true"
+    );
+
+    localStorage.setItem(
+      "foodiehub-current-user",
+      JSON.stringify(registeredUser)
+    );
+
+    /* -----------------------------
+       Go to Home
+    ----------------------------- */
+
+    navigate("/home");
+  };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-orange-100">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 relative overflow-hidden">
 
       {/* Decorative Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
 
-        {/* Large orange blobs */}
-        <div className="absolute -top-32 -left-32 w-72 h-72 sm:w-96 sm:h-96 bg-orange-300/30 rounded-full blur-3xl" />
+      <div className="absolute -top-24 -left-24 w-72 h-72 bg-orange-200/40 rounded-full blur-3xl" />
 
-        <div className="absolute -bottom-40 -right-32 w-80 h-80 sm:w-[450px] sm:h-[450px] bg-orange-400/30 rounded-full blur-3xl" />
+      <div className="absolute top-1/3 -right-32 w-80 h-80 bg-yellow-200/40 rounded-full blur-3xl" />
 
-        <div className="absolute top-1/3 right-1/4 w-40 h-40 bg-yellow-200/30 rounded-full blur-3xl" />
+      <div className="absolute -bottom-32 left-1/3 w-96 h-96 bg-orange-100/60 rounded-full blur-3xl" />
 
-        {/* Food-themed decorative circles */}
-        <div className="absolute top-20 right-10 sm:right-20 text-5xl sm:text-7xl opacity-10 rotate-12">
-          🍕
-        </div>
+      {/* Food Icons */}
 
-        <div className="absolute bottom-24 left-5 sm:left-20 text-5xl sm:text-7xl opacity-10 -rotate-12">
-          🍔
-        </div>
-
-        <div className="absolute top-1/2 left-1/4 text-4xl opacity-10">
-          🍟
-        </div>
-
-        <div className="absolute bottom-10 right-1/3 text-4xl opacity-10">
-          🍜
-        </div>
-
-        {/* Decorative white circles */}
-        <div className="absolute top-16 left-1/2 w-5 h-5 bg-white rounded-full shadow-lg opacity-70" />
-        <div className="absolute bottom-32 right-16 w-8 h-8 bg-white rounded-full shadow-lg opacity-70" />
-        <div className="absolute top-1/3 right-10 w-4 h-4 bg-orange-300 rounded-full" />
-
+      <div className="absolute top-20 left-8 sm:left-16 text-4xl sm:text-6xl opacity-20 rotate-12">
+        🍕
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+      <div className="absolute top-40 right-8 sm:right-20 text-4xl sm:text-6xl opacity-20 -rotate-12">
+        🍔
+      </div>
 
-        <div className="flex items-center justify-between">
+      <div className="absolute bottom-20 left-10 sm:left-24 text-4xl sm:text-6xl opacity-20 rotate-12">
+        🍟
+      </div>
 
-          {/* Logo */}
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="text-2xl sm:text-3xl font-black tracking-tight"
-          >
-            🍽️ Foodie
-            <span className="text-orange-600">Hub</span>
-          </button>
-
-          {/* Back Home */}
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="hidden sm:flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-orange-600 transition"
-          >
-            <ArrowLeft size={17} />
-            Back to Home
-          </button>
-
-          {/* Login/Register Toggle */}
-          <button
-            type="button"
-            onClick={() => {
-              setIsLoginView(!isLoginView);
-              setShowPassword(false);
-            }}
-            className="border-2 border-orange-500 text-orange-600 font-bold px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm hover:bg-orange-50 transition bg-white/70 backdrop-blur"
-          >
-            {isLoginView
-              ? "Create an account"
-              : "Login"}
-          </button>
-
-        </div>
-      </header>
+      <div className="absolute bottom-24 right-10 sm:right-24 text-4xl sm:text-6xl opacity-20 -rotate-12">
+        🍜
+      </div>
 
       {/* Main */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
 
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div className="relative min-h-screen flex items-center justify-center px-4 py-10">
 
-          {/* Left Side */}
-          <div className="hidden lg:block">
+        <div className="w-full max-w-md">
 
-            <div className="max-w-lg">
+          {/* Back to Home */}
 
-              {/* Small Badge */}
-              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-bold mb-6">
-                <span>🔥</span>
-                Your food journey starts here
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-500 mb-6 transition"
+          >
+            <ArrowLeft size={18} />
+            Back
+          </Link>
+
+          {/* Card */}
+
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-white p-6 sm:p-8">
+
+            {/* Logo */}
+
+            <div className="flex flex-col items-center text-center">
+
+              <div className="w-16 h-16 rounded-2xl bg-orange-500 text-white flex items-center justify-center shadow-lg shadow-orange-200">
+                <Utensils size={30} />
               </div>
 
-              <h1 className="text-5xl xl:text-6xl font-black text-gray-900 leading-tight">
-
-                {isLoginView ? (
-                  <>
-                    Good food,
-                    <br />
-                    <span className="text-orange-600">
-                      delivered fast.
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    Good food,
-                    <br />
-                    <span className="text-orange-600">
-                      good mood!
-                    </span>
-                  </>
-                )}
-
+              <h1 className="text-3xl sm:text-4xl font-black mt-5">
+                Foodie
+                <span className="text-orange-500">
+                  Hub
+                </span>
               </h1>
 
-              <p className="text-gray-500 text-lg mt-6 leading-relaxed">
-                Discover delicious meals from your favorite
-                restaurants and get them delivered straight
-                to your doorstep.
+              <p className="text-gray-500 mt-2">
+                Welcome back! Login to continue.
               </p>
 
-              {/* Benefits */}
-              <div className="mt-8 space-y-4">
-
-                <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-xl bg-orange-100 flex items-center justify-center">
-                    <Bike
-                      size={22}
-                      className="text-orange-600"
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-gray-900">
-                      Fast Delivery
-                    </h3>
-
-                    <p className="text-sm text-gray-500">
-                      Hot and fresh food at your doorstep
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-xl bg-orange-100 flex items-center justify-center">
-                    <Tag
-                      size={22}
-                      className="text-orange-600"
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-gray-900">
-                      Amazing Offers
-                    </h3>
-
-                    <p className="text-sm text-gray-500">
-                      Save more on every order
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-xl bg-orange-100 flex items-center justify-center">
-                    <ShieldCheck
-                      size={22}
-                      className="text-orange-600"
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-gray-900">
-                      Safe & Secure
-                    </h3>
-
-                    <p className="text-sm text-gray-500">
-                      Your account and payments are protected
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-
             </div>
-          </div>
 
-          {/* Login Card */}
-          <div className="flex justify-center lg:justify-end">
+            {/* Error */}
 
-            <div className="w-full max-w-xl">
+            {error && (
+              <div className="mt-6 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
+                {error}
+              </div>
+            )}
 
-              {/* Mobile Heading */}
-              <div className="lg:hidden text-center mb-7">
+            {/* Form */}
 
-                <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-xs sm:text-sm font-bold mb-4">
-                  🍴 Welcome to FoodieHub
+            <form
+              onSubmit={handleLogin}
+              className="mt-7 space-y-5"
+            >
+
+              {/* Email */}
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email Address
+                </label>
+
+                <div className="relative">
+
+                  <Mail
+                    size={19}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) =>
+                      setEmail(e.target.value)
+                    }
+                    placeholder="Enter your email"
+                    className="
+                      w-full
+                      border border-gray-200
+                      rounded-xl
+                      pl-11 pr-4
+                      py-3.5
+                      outline-none
+                      focus:border-orange-500
+                      focus:ring-2
+                      focus:ring-orange-100
+                      transition
+                    "
+                  />
+
                 </div>
-
-                <h1 className="text-3xl sm:text-4xl font-black text-gray-900">
-                  {isLoginView
-                    ? "Welcome back 👋"
-                    : "Join FoodieHub 🚀"}
-                </h1>
-
-                <p className="text-gray-500 text-sm mt-2">
-                  {isLoginView
-                    ? "Login to continue ordering delicious food"
-                    : "Create an account and start ordering"}
-                </p>
-
               </div>
 
-              {/* Card */}
-              <div className="bg-white/95 backdrop-blur-xl p-5 sm:p-8 lg:p-10 rounded-3xl border border-white shadow-2xl">
+              {/* Password */}
 
-                {/* Card Header */}
-                <div className="text-center mb-7 sm:mb-8">
+              <div>
 
-                  <div className="mx-auto w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center text-2xl mb-4">
-                    {isLoginView ? "👋" : "🚀"}
-                  </div>
+                <div className="flex justify-between items-center mb-2">
 
-                  <h2 className="text-2xl sm:text-3xl font-black text-gray-900">
-                    {isLoginView
-                      ? "Welcome back"
-                      : "Create your account"}
-                  </h2>
+                  <label className="text-sm font-semibold text-gray-700">
+                    Password
+                  </label>
 
-                  <p className="text-gray-400 text-sm mt-2">
-                    {isLoginView
-                      ? "Login to your FoodieHub account"
-                      : "Sign up and start enjoying great food"}
-                  </p>
-
-                </div>
-
-                {/* Form */}
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    navigate("/");
-                  }}
-                  className="space-y-4"
-                >
-
-                  {/* Name + Phone */}
-                  {!isLoginView && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-gray-700">
-                          Full Name
-                        </label>
-
-                        <div className="flex items-center gap-2 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus-within:border-orange-500 focus-within:bg-white transition">
-
-                          <User
-                            className="text-gray-400 flex-shrink-0"
-                            size={18}
-                          />
-
-                          <input
-                            type="text"
-                            placeholder="Your name"
-                            required
-                            className="w-full text-sm bg-transparent focus:outline-none"
-                          />
-
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-gray-700">
-                          Phone
-                        </label>
-
-                        <div className="flex items-center gap-2 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus-within:border-orange-500 focus-within:bg-white transition">
-
-                          <Phone
-                            className="text-gray-400 flex-shrink-0"
-                            size={18}
-                          />
-
-                          <input
-                            type="tel"
-                            placeholder="Phone number"
-                            required
-                            className="w-full text-sm bg-transparent focus:outline-none"
-                          />
-
-                        </div>
-                      </div>
-
-                    </div>
-                  )}
-
-                  {/* Email */}
-                  <div className="space-y-1.5">
-
-                    <label className="text-xs font-bold text-gray-700">
-                      Email address
-                    </label>
-
-                    <div className="flex items-center gap-2 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus-within:border-orange-500 focus-within:bg-white transition">
-
-                      <Mail
-                        className="text-gray-400 flex-shrink-0"
-                        size={18}
-                      />
-
-                      <input
-                        type="email"
-                        placeholder="Enter your email"
-                        required
-                        className="w-full text-sm bg-transparent focus:outline-none"
-                      />
-
-                    </div>
-
-                  </div>
-
-                  {/* Password */}
-                  <div className="space-y-1.5">
-
-                    <label className="text-xs font-bold text-gray-700">
-                      Password
-                    </label>
-
-                    <div className="flex items-center gap-2 px-3 py-3 rounded-xl border border-gray-200 bg-gray-50 focus-within:border-orange-500 focus-within:bg-white transition">
-
-                      <Lock
-                        className="text-gray-400 flex-shrink-0"
-                        size={18}
-                      />
-
-                      <input
-                        type={
-                          showPassword
-                            ? "text"
-                            : "password"
-                        }
-                        placeholder="Enter your password"
-                        required
-                        className="w-full text-sm bg-transparent focus:outline-none"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowPassword(!showPassword)
-                        }
-                        className="text-gray-400 hover:text-orange-500 transition"
-                      >
-                        {showPassword ? (
-                          <EyeOff size={18} />
-                        ) : (
-                          <Eye size={18} />
-                        )}
-                      </button>
-
-                    </div>
-
-                  </div>
-
-                  {/* Forgot Password */}
-                  {isLoginView && (
-                    <div className="flex justify-end">
-
-                      <button
-                        type="button"
-                        className="text-xs sm:text-sm font-semibold text-orange-500 hover:text-orange-600"
-                      >
-                        Forgot password?
-                      </button>
-
-                    </div>
-                  )}
-
-                  {/* Submit */}
                   <button
-                    type="submit"
-                    className="w-full bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-bold py-3.5 rounded-xl transition-all duration-200 text-sm shadow-lg shadow-orange-600/20 hover:shadow-orange-600/30"
+                    type="button"
+                    className="text-xs sm:text-sm text-orange-500 hover:text-orange-600 font-medium"
+                    onClick={() =>
+                      alert(
+                        "Password reset will be available soon."
+                      )
+                    }
                   >
-                    {isLoginView
-                      ? "Login"
-                      : "Create Account"}
+                    Forgot Password?
                   </button>
 
-                </form>
-
-                {/* Bottom Toggle */}
-                <div className="text-center mt-6 pt-6 border-t border-gray-100">
-
-                  <p className="text-sm text-gray-500">
-
-                    {isLoginView
-                      ? "Don't have an account?"
-                      : "Already have an account?"}
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsLoginView(!isLoginView);
-                        setShowPassword(false);
-                      }}
-                      className="ml-1 font-bold text-orange-500 hover:text-orange-600"
-                    >
-                      {isLoginView
-                        ? "Create one"
-                        : "Login"}
-                    </button>
-
-                  </p>
-
                 </div>
 
+                <div className="relative">
+
+                  <Lock
+                    size={19}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+
+                  <input
+                    type={
+                      showPassword
+                        ? "text"
+                        : "password"
+                    }
+                    value={password}
+                    onChange={(e) =>
+                      setPassword(e.target.value)
+                    }
+                    placeholder="Enter your password"
+                    className="
+                      w-full
+                      border border-gray-200
+                      rounded-xl
+                      pl-11 pr-12
+                      py-3.5
+                      outline-none
+                      focus:border-orange-500
+                      focus:ring-2
+                      focus:ring-orange-100
+                      transition
+                    "
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowPassword(!showPassword)
+                    }
+                    className="
+                      absolute
+                      right-4
+                      top-1/2
+                      -translate-y-1/2
+                      text-gray-400
+                      hover:text-gray-700
+                    "
+                  >
+                    {showPassword ? (
+                      <EyeOff size={19} />
+                    ) : (
+                      <Eye size={19} />
+                    )}
+                  </button>
+
+                </div>
               </div>
 
+              {/* Login */}
+
+              <button
+                type="submit"
+                className="
+                  w-full
+                  bg-orange-500
+                  hover:bg-orange-600
+                  text-white
+                  font-bold
+                  py-3.5
+                  rounded-xl
+                  flex
+                  items-center
+                  justify-center
+                  gap-2
+                  shadow-lg
+                  shadow-orange-200
+                  transition
+                  active:scale-[0.98]
+                "
+              >
+                <LogIn size={19} />
+                Login
+              </button>
+
+            </form>
+
+            {/* Register */}
+
+            <div className="text-center mt-7 pt-6 border-t border-gray-100">
+
+              <p className="text-gray-500 text-sm">
+                Don't have an account?
+              </p>
+
+              <Link
+                to="/register"
+                className="inline-block mt-1 text-orange-500 font-bold hover:text-orange-600"
+              >
+                Create an account
+              </Link>
+
             </div>
+
           </div>
 
+          <p className="text-center text-xs text-gray-400 mt-6">
+            © 2026 FoodieHub. All rights reserved.
+          </p>
+
         </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 text-center py-5 sm:py-6 text-xs text-gray-400 font-semibold">
-        © 2026 FoodieHub. All rights reserved.
-      </footer>
-
+      </div>
     </div>
   );
 }
