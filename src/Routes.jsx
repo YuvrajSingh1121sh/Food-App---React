@@ -13,8 +13,13 @@ import Register from "./pages/Register";
 import SearchPage from "./pages/Search";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
+import CategoryDishes from "./pages/CategoryDishes";
 
 import Layout from "./Layout/Layout";
+
+// ---------------------------------------------
+// PROTECTED ROUTE
+// ---------------------------------------------
 
 function ProtectedRoute() {
   const isLoggedIn =
@@ -45,11 +50,19 @@ function ProtectedRoute() {
   return <Outlet />;
 }
 
+// ---------------------------------------------
+// APPLICATION ROUTES
+// ---------------------------------------------
+
 export default function AppRoutes() {
   return (
     <BrowserRouter>
+
       <Routes>
-        {/* Public */}
+
+        {/* ===================================== */}
+        {/* PUBLIC ROUTES */}
+        {/* ===================================== */}
 
         <Route
           path="/login"
@@ -61,7 +74,12 @@ export default function AppRoutes() {
           element={<Register />}
         />
 
+        {/* ===================================== */}
+        {/* HOME */}
+        {/* ===================================== */}
+
         <Route element={<Layout />}>
+
           <Route
             path="/"
             element={<Home />}
@@ -71,30 +89,48 @@ export default function AppRoutes() {
             path="/home"
             element={<Home />}
           />
+
         </Route>
 
-        {/* Protected */}
+        {/* ===================================== */}
+        {/* PROTECTED ROUTES */}
+        {/* ===================================== */}
 
         <Route element={<ProtectedRoute />}>
+
           <Route element={<Layout />}>
+
+            {/* SEARCH */}
             <Route
               path="/search"
               element={<SearchPage />}
             />
 
+            {/* CART */}
             <Route
               path="/cart"
               element={<Cart />}
             />
 
+            {/* PROFILE */}
             <Route
               path="/profile"
               element={<Profile />}
             />
+
+            {/* CATEGORY */}
+            <Route
+              path="/category/:category"
+              element={<CategoryDishes />}
+            />
+
           </Route>
+
         </Route>
 
-        {/* Unknown route */}
+        {/* ===================================== */}
+        {/* UNKNOWN ROUTES */}
+        {/* ===================================== */}
 
         <Route
           path="*"
@@ -105,7 +141,9 @@ export default function AppRoutes() {
             />
           }
         />
+
       </Routes>
+
     </BrowserRouter>
   );
 }

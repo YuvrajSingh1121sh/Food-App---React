@@ -1,474 +1,5 @@
 import { useState } from "react";
-import {
-  Eye,
-  EyeOff,
-  ArrowLeft,
-  Lock,
-  Mail,
-  User,
-} from "lucide-react";
-
-import {
-  Link,
-  useNavigate,
-} from "react-router-dom";
-
-
-export default function Register() {
-  const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] =
-    useState(false);
-
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
-
-  const [error, setError] = useState("");
-
-
-  // =====================================
-  // REGISTER
-  // =====================================
-
-  const handleRegister = (e) => {
-    e.preventDefault();
-
-    setError("");
-
-
-    // Validation
-
-    if (
-      !name.trim() ||
-      !email.trim() ||
-      !password.trim() ||
-      !confirmPassword.trim()
-    ) {
-      setError(
-        "Please fill in all the fields."
-      );
-
-      return;
-    }
-
-
-    // Password length
-
-    if (password.length < 6) {
-      setError(
-        "Password must be at least 6 characters."
-      );
-
-      return;
-    }
-
-
-    // Password match
-
-    if (password !== confirmPassword) {
-      setError(
-        "Passwords do not match."
-      );
-
-      return;
-    }
-
-
-    // Check existing account
-
-    const existingUser =
-      localStorage.getItem("foodiehub-user");
-
-
-    if (existingUser) {
-
-      const savedUser =
-        JSON.parse(existingUser);
-
-      if (
-        savedUser.email.toLowerCase() ===
-        email.trim().toLowerCase()
-      ) {
-        setError(
-          "An account with this email already exists. Please login."
-        );
-
-        return;
-      }
-    }
-
-
-    // =================================
-    // SAVE USER
-    // =================================
-
-    const user = {
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password: password,
-    };
-
-
-    localStorage.setItem(
-      "foodiehub-user",
-      JSON.stringify(user)
-    );
-
-
-    // Login user automatically
-
-    localStorage.setItem(
-      "foodiehub-logged-in",
-      "true"
-    );
-
-    localStorage.setItem(
-      "foodiehub-current-user",
-      user.name
-    );
-
-
-    // Tell Navbar
-
-    window.dispatchEvent(
-      new Event("loginUpdated")
-    );
-
-
-    // =================================
-    // RETURN TO ORIGINAL PAGE
-    // =================================
-
-    const redirectPath =
-      sessionStorage.getItem(
-        "foodiehub-redirect-after-login"
-      );
-
-
-    sessionStorage.removeItem(
-      "foodiehub-redirect-after-login"
-    );
-
-
-    if (redirectPath) {
-      navigate(redirectPath);
-    } else {
-      navigate("/");
-    }
-  };
-
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center p-4 relative overflow-hidden">
-
-
-      {/* =================================
-          BACKGROUND DECORATIONS
-      ================================= */}
-
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-orange-200 rounded-full blur-3xl opacity-50" />
-
-      <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-yellow-200 rounded-full blur-3xl opacity-50" />
-
-      <div className="absolute top-16 left-16 text-5xl opacity-20">
-        🍟
-      </div>
-
-      <div className="absolute bottom-16 right-16 text-5xl opacity-20">
-        🍜
-      </div>
-
-
-      {/* =================================
-          REGISTER CARD
-      ================================= */}
-
-      <div className="relative w-full max-w-md">
-
-
-        {/* LOGO */}
-
-        <div className="text-center mb-6">
-
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2"
-          >
-
-            <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center text-2xl shadow-lg">
-              🍴
-            </div>
-
-            <h1 className="text-2xl font-bold text-gray-900">
-              Foodie<span className="text-orange-500">
-                Hub
-              </span>
-            </h1>
-
-          </Link>
-
-        </div>
-
-
-        <div className="bg-white/95 backdrop-blur rounded-3xl shadow-xl border border-white p-6 sm:p-8">
-
-
-          {/* HEADING */}
-
-          <div className="text-center mb-6">
-
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Create Account
-            </h2>
-
-            <p className="text-gray-500 mt-2 text-sm">
-              Join FoodieHub and start ordering.
-            </p>
-
-          </div>
-
-
-          {/* ERROR */}
-
-          {error && (
-            <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
-              {error}
-            </div>
-          )}
-
-
-          {/* FORM */}
-
-          <form
-            onSubmit={handleRegister}
-            className="space-y-4"
-          >
-
-
-            {/* NAME */}
-
-            <div>
-
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
-              </label>
-
-              <div className="relative">
-
-                <User
-                  size={19}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) =>
-                    setName(e.target.value)
-                  }
-                  placeholder="Enter your full name"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition"
-                />
-
-              </div>
-
-            </div>
-
-
-            {/* EMAIL */}
-
-            <div>
-
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-
-              <div className="relative">
-
-                <Mail
-                  size={19}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) =>
-                    setEmail(e.target.value)
-                  }
-                  placeholder="Enter your email"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition"
-                />
-
-              </div>
-
-            </div>
-
-
-            {/* PASSWORD */}
-
-            <div>
-
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-
-              <div className="relative">
-
-                <Lock
-                  size={19}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-
-                <input
-                  type={
-                    showPassword
-                      ? "text"
-                      : "password"
-                  }
-                  value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
-                  }
-                  placeholder="Create a password"
-                  className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition"
-                />
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-
-                  {showPassword ? (
-                    <EyeOff size={19} />
-                  ) : (
-                    <Eye size={19} />
-                  )}
-
-                </button>
-
-              </div>
-
-            </div>
-
-
-            {/* CONFIRM PASSWORD */}
-
-            <div>
-
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-
-              <div className="relative">
-
-                <Lock
-                  size={19}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-
-                <input
-                  type={
-                    showConfirmPassword
-                      ? "text"
-                      : "password"
-                  }
-                  value={confirmPassword}
-                  onChange={(e) =>
-                    setConfirmPassword(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Confirm your password"
-                  className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition"
-                />
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(
-                      !showConfirmPassword
-                    )
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-
-                  {showConfirmPassword ? (
-                    <EyeOff size={19} />
-                  ) : (
-                    <Eye size={19} />
-                  )}
-
-                </button>
-
-              </div>
-
-            </div>
-
-
-            {/* REGISTER BUTTON */}
-
-            <button
-              type="submit"
-              className="w-full py-3.5 mt-2 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 active:scale-[0.99] transition shadow-lg shadow-orange-200"
-            >
-              Create Account
-            </button>
-
-          </form>
-
-
-          {/* LOGIN */}
-
-          <div className="text-center mt-6">
-
-            <p className="text-sm text-gray-500">
-
-              Already have an account?{" "}
-
-              <Link
-                to="/login"
-                className="text-orange-500 font-semibold hover:text-orange-600"
-              >
-                Login
-              </Link>
-
-            </p>
-
-          </div>
-
-
-          {/* BACK HOME */}
-
-          <Link
-            to="/"
-            className="mt-5 flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition"
-          >
-
-            <ArrowLeft size={16} />
-
-            Back to Home
-
-          </Link>
-
-        </div>
-
-      </div>
-
-    </div>
-  );
-}import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import {
   User,
   Phone,
@@ -476,19 +7,12 @@ import {
   Lock,
   Eye,
   EyeOff,
+  UserPlus,
   ArrowLeft,
 } from "lucide-react";
 
 export default function Register() {
   const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] =
-    useState(false);
-
-  const [
-    showConfirmPassword,
-    setShowConfirmPassword,
-  ] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -497,6 +21,10 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
 
   const [error, setError] = useState("");
 
@@ -509,68 +37,81 @@ export default function Register() {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
 
-    if (
-      !form.name ||
-      !form.phone ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
-      setError(
-        "Please fill all the fields."
-      );
+    const name = form.name.trim();
+    const phone = form.phone.trim();
+    const email = form.email.trim().toLowerCase();
+    const password = form.password;
+    const confirmPassword = form.confirmPassword;
+
+    // -----------------------------
+    // VALIDATION
+    // -----------------------------
+
+    if (!name || !phone || !email || !password) {
+      setError("Please fill in all required fields.");
       return;
     }
 
-    if (form.phone.length < 10) {
-      setError(
-        "Please enter a valid phone number."
-      );
-      return;
-    }
-
-    if (form.password.length < 6) {
-      setError(
-        "Password must be at least 6 characters."
-      );
+    if (phone.length !== 10 || !/^\d{10}$/.test(phone)) {
+      setError("Please enter a valid 10-digit phone number.");
       return;
     }
 
     if (
-      form.password !==
-      form.confirmPassword
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     ) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
       setError(
-        "Passwords do not match."
+        "Password must contain at least 6 characters."
       );
       return;
     }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    // -----------------------------
+    // CHECK EXISTING USER
+    // -----------------------------
 
     const existingUser = JSON.parse(
-      localStorage.getItem(
-        "foodiehub-user"
-      ) || "null"
+      localStorage.getItem("foodiehub-user") || "null"
     );
 
-    if (
-      existingUser &&
-      existingUser.email ===
-        form.email
-    ) {
-      setError(
-        "An account with this email already exists."
-      );
-      return;
+    if (existingUser) {
+      if (existingUser.email === email) {
+        setError(
+          "An account with this email already exists."
+        );
+        return;
+      }
+
+      if (existingUser.phone === phone) {
+        setError(
+          "An account with this phone number already exists."
+        );
+        return;
+      }
     }
 
+    // -----------------------------
+    // CREATE USER
+    // -----------------------------
+
     const user = {
-      name: form.name.trim(),
-      phone: form.phone.trim(),
-      email: form.email.trim(),
-      password: form.password,
+      name,
+      phone,
+      email,
+      password,
     };
 
     localStorage.setItem(
@@ -578,221 +119,315 @@ export default function Register() {
       JSON.stringify(user)
     );
 
+    // Login user automatically
     localStorage.setItem(
       "foodiehub-logged-in",
       "true"
     );
 
+    // Store name for Navbar/Profile avatar
     localStorage.setItem(
       "foodiehub-current-user",
-      user.name
+      name
     );
 
+    // Tell Navbar that login state changed
     window.dispatchEvent(
       new Event("loginUpdated")
     );
 
-    const redirect =
+    // -----------------------------
+    // REDIRECT
+    // -----------------------------
+
+    const redirectPath =
       sessionStorage.getItem(
         "foodiehub-redirect-after-login"
-      );
+      ) || "/";
 
     sessionStorage.removeItem(
       "foodiehub-redirect-after-login"
     );
 
-    navigate(
-      redirect || "/",
-      { replace: true }
-    );
+    navigate(redirectPath);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-xl">
-        <div className="mb-5">
+    <main className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center px-4 py-8">
+
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 bg-white rounded-3xl shadow-xl overflow-hidden">
+
+        {/* -------------------------------- */}
+        {/* LEFT SIDE */}
+        {/* -------------------------------- */}
+
+        <div className="hidden lg:flex bg-orange-500 text-white p-10 flex-col justify-center">
+
+          <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mb-6">
+            <UserPlus size={34} />
+          </div>
+
+          <h1 className="text-4xl font-extrabold">
+            Join FoodieHub
+          </h1>
+
+          <p className="mt-4 text-orange-100 leading-relaxed">
+            Create your FoodieHub account and enjoy
+            delicious food delivered right to your door.
+          </p>
+
+          <div className="mt-8 space-y-4 text-sm">
+
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+                ✓
+              </span>
+              Discover nearby restaurants
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+                ✓
+              </span>
+              Order your favourite food
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+                ✓
+              </span>
+              Track your orders
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+                ✓
+              </span>
+              Save addresses and payment methods
+            </div>
+
+          </div>
+        </div>
+
+        {/* -------------------------------- */}
+        {/* RIGHT SIDE */}
+        {/* -------------------------------- */}
+
+        <div className="p-6 sm:p-8 lg:p-10">
+
+          {/* BACK */}
           <button
+            type="button"
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-gray-600 hover:text-orange-500 font-medium"
+            className="flex items-center gap-2 text-gray-500 hover:text-orange-500 transition mb-5"
           >
             <ArrowLeft size={18} />
             Back to Home
           </button>
-        </div>
 
-        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 sm:p-9">
-          <div className="text-center mb-7">
-            <div className="text-4xl">
-              🍽️
-            </div>
-
-            <h1 className="text-3xl font-black text-gray-900 mt-3">
+          <div className="mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Create Account
-            </h1>
+            </h2>
 
-            <p className="text-gray-500 text-sm mt-2">
-              Join FoodieHub and start
-              ordering delicious food.
+            <p className="text-gray-500 text-sm mt-1">
+              Register to start ordering delicious food.
             </p>
           </div>
 
+          {/* ERROR */}
           {error && (
-            <div className="bg-red-50 text-red-600 border border-red-100 rounded-xl px-4 py-3 text-sm mb-5">
+            <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
               {error}
             </div>
           )}
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleRegister}
             className="space-y-4"
           >
-            {/* Name */}
 
-            <Input
-              icon={<User size={18} />}
-              name="name"
-              type="text"
-              placeholder="Full Name"
-              value={form.name}
-              onChange={handleChange}
-            />
+            {/* NAME */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Full Name
+              </label>
 
-            {/* Phone */}
+              <div className="relative">
+                <User
+                  size={19}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
 
-            <Input
-              icon={<Phone size={18} />}
-              name="phone"
-              type="tel"
-              placeholder="Phone Number"
-              value={form.phone}
-              onChange={handleChange}
-            />
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="Enter your name"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                  required
+                />
+              </div>
+            </div>
 
-            {/* Email */}
+            {/* PHONE */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Phone Number
+              </label>
 
-            <Input
-              icon={<Mail size={18} />}
-              name="email"
-              type="email"
-              placeholder="Email Address"
-              value={form.email}
-              onChange={handleChange}
-            />
+              <div className="relative">
+                <Phone
+                  size={19}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
 
-            {/* Password */}
+                <input
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="10-digit phone number"
+                  maxLength="10"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                  required
+                />
+              </div>
+            </div>
 
-            <PasswordInput
-              icon={<Lock size={18} />}
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              show={showPassword}
-              setShow={setShowPassword}
-            />
+            {/* EMAIL */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Email Address
+              </label>
 
-            {/* Confirm Password */}
+              <div className="relative">
+                <Mail
+                  size={19}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
 
-            <PasswordInput
-              icon={<Lock size={18} />}
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              show={showConfirmPassword}
-              setShow={
-                setShowConfirmPassword
-              }
-            />
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                  required
+                />
+              </div>
+            </div>
 
+            {/* PASSWORD */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Password
+              </label>
+
+              <div className="relative">
+                <Lock
+                  size={19}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Minimum 6 characters"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPassword(!showPassword)
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500"
+                >
+                  {showPassword ? (
+                    <EyeOff size={19} />
+                  ) : (
+                    <Eye size={19} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Confirm Password
+              </label>
+
+              <div className="relative">
+                <Lock
+                  size={19}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type={
+                    showConfirmPassword
+                      ? "text"
+                      : "password"
+                  }
+                  name="confirmPassword"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Re-enter your password"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowConfirmPassword(
+                      !showConfirmPassword
+                    )
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-500"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={19} />
+                  ) : (
+                    <Eye size={19} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* REGISTER BUTTON */}
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-orange-500/20"
+              className="w-full mt-2 py-3.5 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 active:scale-[0.99] transition"
             >
               Create Account
             </button>
           </form>
 
+          {/* LOGIN */}
           <p className="text-center text-sm text-gray-500 mt-6">
             Already have an account?{" "}
-            <button
-              onClick={() =>
-                navigate("/login")
-              }
-              className="text-orange-600 font-bold hover:underline"
+            <Link
+              to="/login"
+              className="font-semibold text-orange-500 hover:text-orange-600"
             >
               Login
-            </button>
+            </Link>
           </p>
+
         </div>
       </div>
-    </div>
-  );
-}
-
-function Input({
-  icon,
-  name,
-  type,
-  placeholder,
-  value,
-  onChange,
-}) {
-  return (
-    <div className="flex items-center gap-3 border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus-within:border-orange-400 focus-within:ring-2 focus-within:ring-orange-100">
-      <span className="text-gray-400">
-        {icon}
-      </span>
-
-      <input
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full bg-transparent outline-none text-sm"
-      />
-    </div>
-  );
-}
-
-function PasswordInput({
-  icon,
-  name,
-  placeholder,
-  value,
-  onChange,
-  show,
-  setShow,
-}) {
-  return (
-    <div className="flex items-center gap-3 border border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus-within:border-orange-400 focus-within:ring-2 focus-within:ring-orange-100">
-      <span className="text-gray-400">
-        {icon}
-      </span>
-
-      <input
-        name={name}
-        type={show ? "text" : "password"}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full bg-transparent outline-none text-sm"
-      />
-
-      <button
-        type="button"
-        onClick={() =>
-          setShow(!show)
-        }
-        className="text-gray-400 hover:text-gray-600"
-      >
-        {show ? (
-          <EyeOff size={18} />
-        ) : (
-          <Eye size={18} />
-        )}
-      </button>
-    </div>
+    </main>
   );
 }
