@@ -1,35 +1,55 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import SearchPage from "./pages/Search";
 import Cart from "./pages/Cart";
+import Profile from "./pages/Profile";
+
 import Layout from "./Layout/Layout";
 
-/* --------------------------------
-   Protected Route
---------------------------------- */
-
-function ProtectedRoute({ children }) {
+function ProtectedRoute() {
   const isLoggedIn =
-    localStorage.getItem("foodiehub-logged-in") === "true";
+    localStorage.getItem(
+      "foodiehub-logged-in"
+    ) === "true";
 
-  return isLoggedIn ? (
-    children
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  const location = useLocation();
+
+  if (!isLoggedIn) {
+    const currentPath =
+      location.pathname +
+      location.search;
+
+    sessionStorage.setItem(
+      "foodiehub-redirect-after-login",
+      currentPath
+    );
+
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
+
+  return <Outlet />;
 }
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-
-        {/* =============================
-            Authentication
-        ============================= */}
+        {/* Public */}
 
         <Route
           path="/login"
@@ -41,64 +61,50 @@ export default function AppRoutes() {
           element={<Register />}
         />
 
-
-        {/* =============================
-            Protected Application
-        ============================= */}
-
-        <Route
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
+        <Route element={<Layout />}>
           <Route
-            path="/home"
+            path="/"
             element={<Home />}
           />
 
           <Route
-            path="/search"
-            element={<SearchPage />}
-          />
-
-          <Route
-            path="/cart"
-            element={<Cart />}
+            path="/home"
+            element={<Home />}
           />
         </Route>
 
+        {/* Protected */}
 
-        {/* =============================
-            Start App
-        ============================= */}
-
-        <Route
-          path="/"
-          element={
-            <Navigate
-              to="/login"
-              replace
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route
+              path="/search"
+              element={<SearchPage />}
             />
-          }
-        />
 
+            <Route
+              path="/cart"
+              element={<Cart />}
+            />
 
-        {/* =============================
-            Unknown URL
-        ============================= */}
+            <Route
+              path="/profile"
+              element={<Profile />}
+            />
+          </Route>
+        </Route>
+
+        {/* Unknown route */}
 
         <Route
           path="*"
           element={
             <Navigate
-              to="/login"
+              to="/"
               replace
             />
           }
         />
-
       </Routes>
     </BrowserRouter>
   );
